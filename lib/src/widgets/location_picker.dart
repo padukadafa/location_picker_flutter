@@ -3,6 +3,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location_picker_flutter/location_picker_flutter.dart';
+import 'package:location_picker_flutter/src/models/location_picker_result.dart';
 import 'package:location_picker_flutter/src/services/location_service.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
@@ -19,6 +20,7 @@ class _LocationPickerState extends State<LocationPicker> {
   DateTime? currentDate;
   String? street;
   String? locationDetail;
+  LocationPickerResult? result;
   LocationService locationService = LocationService();
 
   @override
@@ -50,6 +52,9 @@ class _LocationPickerState extends State<LocationPicker> {
       };
       List<Placemark> placemarks =
           await placemarkFromCoordinates(-5.3630526, 105.3094932);
+      result = LocationPickerResult(
+          target: const LatLng(-5.3630526, 105.3094932),
+          placemark: placemarks.first);
       setState(() {
         street = placemarks.first.street;
         locationDetail =
@@ -91,8 +96,13 @@ class _LocationPickerState extends State<LocationPicker> {
                   List<Placemark> placemarks = await placemarkFromCoordinates(
                       cameraPosition.target.latitude,
                       cameraPosition.target.longitude);
+                  result = LocationPickerResult(
+                      target: LatLng(cameraPosition.target.latitude,
+                          cameraPosition.target.longitude),
+                      placemark: placemarks.first);
                   setState(() {
                     street = placemarks.first.street;
+
                     locationDetail =
                         "$street, ${placemarks.first.subLocality}, ${placemarks.first.locality}, ${placemarks.first.subAdministrativeArea}, ${placemarks.first.administrativeArea}, ${placemarks.first.country}";
                   });
@@ -230,7 +240,8 @@ class _LocationPickerState extends State<LocationPicker> {
                             width: double.maxFinite,
                             child: ElevatedButton(
                               onPressed: () {
-                                Navigator.pop(context);
+                                Navigator.of(context)
+                                    .pop<LocationPickerResult?>(result);
                               },
                               child: const Text("Next"),
                             ),
