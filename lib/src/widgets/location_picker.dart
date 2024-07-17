@@ -52,15 +52,15 @@ class _LocationPickerState extends State<LocationPicker> {
           });
         }
       };
-      List<Placemark> placemarks = await placemarkFromCoordinates(
-          initialLocation.latitude, initialLocation.longitude);
-      result = LocationPickerResult(
-          target: initialLocation, placemark: placemarks.first);
-      setState(() {
-        street = placemarks.first.street;
-        locationDetail =
-            "$street, ${placemarks.first.subLocality}, ${placemarks.first.locality}, ${placemarks.first.subAdministrativeArea}, ${placemarks.first.administrativeArea}, ${placemarks.first.country}";
-      });
+      // List<Placemark> placemarks = await placemarkFromCoordinates(
+      //     initialLocation.latitude, initialLocation.longitude);
+      // result = LocationPickerResult(
+      //     target: initialLocation, placemark: placemarks.first);
+      // setState(() {
+      //   street = placemarks.first.street;
+      //   locationDetail =
+      //       "$street, ${placemarks.first.subLocality}, ${placemarks.first.locality}, ${placemarks.first.subAdministrativeArea}, ${placemarks.first.administrativeArea}, ${placemarks.first.country}";
+      // });
     });
   }
 
@@ -82,8 +82,21 @@ class _LocationPickerState extends State<LocationPicker> {
               myLocationEnabled: false,
               zoomControlsEnabled: false,
               mapToolbarEnabled: false,
-              onMapCreated: (c) {
+              onMapCreated: (c) async {
                 mapController = c;
+                if (widget.initialLocation == null) {
+                  final currentLocation =
+                      await locationService.getCurrentLocation();
+                  mapController.animateCamera(
+                    CameraUpdate.newCameraPosition(
+                      CameraPosition(
+                        target: LatLng(currentLocation.latitude!,
+                            currentLocation.longitude!),
+                        zoom: 16,
+                      ),
+                    ),
+                  );
+                }
               },
               onCameraMove: (cameraPosition) async {
                 setState(() {
