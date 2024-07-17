@@ -8,7 +8,8 @@ import 'package:location_picker_flutter/src/services/location_service.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class LocationPicker extends StatefulWidget {
-  const LocationPicker({super.key});
+  final LatLng initialLocation;
+  const LocationPicker({super.key, this.initialLocation = const LatLng(0, 0)});
 
   @override
   State<LocationPicker> createState() => _LocationPickerState();
@@ -50,11 +51,10 @@ class _LocationPickerState extends State<LocationPicker> {
           });
         }
       };
-      List<Placemark> placemarks =
-          await placemarkFromCoordinates(-5.3630526, 105.3094932);
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+          widget.initialLocation.latitude, widget.initialLocation.longitude);
       result = LocationPickerResult(
-          target: const LatLng(-5.3630526, 105.3094932),
-          placemark: placemarks.first);
+          target: widget.initialLocation, placemark: placemarks.first);
       setState(() {
         street = placemarks.first.street;
         locationDetail =
@@ -72,8 +72,8 @@ class _LocationPickerState extends State<LocationPicker> {
         body: Stack(
           children: [
             GoogleMap(
-              initialCameraPosition: const CameraPosition(
-                target: LatLng(-5.3630526, 105.3094932),
+              initialCameraPosition: CameraPosition(
+                target: widget.initialLocation,
                 zoom: 16,
               ),
               style: googleMapStyle,
