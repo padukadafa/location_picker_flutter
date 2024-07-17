@@ -12,7 +12,9 @@ class LocationPickerFlutter extends StatelessWidget {
   }) async {
     final result = await Navigator.of(context).push<LocationPickerResult?>(
       MaterialPageRoute(
-        builder: (_) => const LocationPicker(),
+        builder: (_) => LocationPicker(
+          initialLocation: initialLocation,
+        ),
       ),
     );
     return result;
@@ -20,6 +22,6 @@ class LocationPickerFlutter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const LocationPicker();
+    return LocationPicker();
   }
 }

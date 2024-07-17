@@ -8,8 +8,8 @@ import 'package:location_picker_flutter/src/services/location_service.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class LocationPicker extends StatefulWidget {
-  final LatLng initialLocation;
-  const LocationPicker({super.key, this.initialLocation = const LatLng(0, 0)});
+  final LatLng? initialLocation;
+  const LocationPicker({super.key, this.initialLocation});
 
   @override
   State<LocationPicker> createState() => _LocationPickerState();
@@ -23,10 +23,11 @@ class _LocationPickerState extends State<LocationPicker> {
   String? locationDetail;
   LocationPickerResult? result;
   LocationService locationService = LocationService();
-
+  late LatLng initialLocation;
   @override
   void initState() {
     super.initState();
+    initialLocation = widget.initialLocation ?? const LatLng(0, 0);
 
     WidgetsBinding.instance.addPostFrameCallback((r) async {
       if (MediaQuery.of(context).platformBrightness == Brightness.dark) {
@@ -52,9 +53,9 @@ class _LocationPickerState extends State<LocationPicker> {
         }
       };
       List<Placemark> placemarks = await placemarkFromCoordinates(
-          widget.initialLocation.latitude, widget.initialLocation.longitude);
+          initialLocation.latitude, initialLocation.longitude);
       result = LocationPickerResult(
-          target: widget.initialLocation, placemark: placemarks.first);
+          target: initialLocation, placemark: placemarks.first);
       setState(() {
         street = placemarks.first.street;
         locationDetail =
@@ -73,7 +74,7 @@ class _LocationPickerState extends State<LocationPicker> {
           children: [
             GoogleMap(
               initialCameraPosition: CameraPosition(
-                target: widget.initialLocation,
+                target: initialLocation,
                 zoom: 16,
               ),
               style: googleMapStyle,
