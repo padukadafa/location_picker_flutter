@@ -27,7 +27,8 @@ class _LocationPickerState extends State<LocationPicker> {
   @override
   void initState() {
     super.initState();
-    initialLocation = widget.initialLocation ?? const LatLng(0, 0);
+    initialLocation =
+        widget.initialLocation ?? const LatLng(-5.3630526, 105.3094932);
 
     WidgetsBinding.instance.addPostFrameCallback((r) async {
       if (MediaQuery.of(context).platformBrightness == Brightness.dark) {
