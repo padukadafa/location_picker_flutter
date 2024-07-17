@@ -76,7 +76,6 @@ class _LocationPickerState extends State<LocationPicker> {
             GoogleMap(
               initialCameraPosition: CameraPosition(
                 target: initialLocation,
-                zoom: 16,
               ),
               style: googleMapStyle,
               trafficEnabled: false,
